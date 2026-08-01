@@ -26,7 +26,6 @@ void loop() {
 
 	// Aボタンが押された瞬間
 	if (M5.BtnA.wasPressed()) {
-
 		// 押された回数を増やす
 		pressCount++;
 		// 1回目
@@ -43,11 +42,27 @@ void loop() {
 		else if (pressCount == 2) {
 			// 歩数カウントストップ
 			stopCountSteps();
-			//タイマーストップ
+			// タイマーストップ
 			stopTimer();
-			// 次に押した時にまた1回目に戻す
-			pressCount = 0;
+			
+			M5.Lcd.setTextColor(RED);
+			M5.Lcd.println("Data was saved!");
 		}
+		// 3回目(画面とデータをリセット)
+		else if (pressCount == 3) {
+
+			pressCount = 0;
+
+			M5.Lcd.fillScreen(BLACK);
+			M5.Lcd.setTextColor(WHITE);
+			M5.Lcd.setCursor(0,0);
+			M5.Lcd.println("Initializing...");
+
+			steps = 0;
+			elapsed = 0;
+			startDate, endDate = "";
+
+			M5.Lcd.println("Press A button!");
+		}	
 	}
 }
-

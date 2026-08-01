@@ -28,6 +28,7 @@ void setup() {
 
 void loop() {
   	M5.update();
+	updateGPS();
 
 	// Aボタンが押された瞬間
 	if (M5.BtnA.wasPressed()) {
@@ -53,22 +54,30 @@ void loop() {
 			stopTimer();
 			// GPSストップ
 			stopGPS();
-			// 次に押した時にまた1回目に戻す
-			pressCount = 0;
 
 			// BLEでデータ送信
 			sendDataViaBLE(path, totalDistance, steps, elapsed);
+			
 			M5.Lcd.setTextColor(RED);
 			M5.Lcd.println("Data was saved!");
+		}
+		// 3回目(画面とデータをリセット)
+		else if (pressCount == 3) {
+
+			pressCount = 0;
+
+			M5.Lcd.fillScreen(BLACK);
+			M5.Lcd.setTextColor(WHITE);
+			M5.Lcd.setCursor(0,0);
+			M5.Lcd.println("Initializing...");
 
 			path.clear();
-		}
-	}
+			totalDistance = 0.0;
+			steps = 0;
+			elapsed = 0;
+			startDate, endDate = "";
 
-	if(pressCount == 1){
-		updateGPS();
-	} else if(pressCount == 2){
-		stopGPS();
+			M5.Lcd.println("Press A button!");
+		}	
 	}
 }
-
