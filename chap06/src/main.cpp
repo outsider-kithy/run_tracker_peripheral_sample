@@ -7,8 +7,6 @@
 int pressCount = 0;
 
 void setup() {
-  //connectWifi();
-
   M5.begin();
   M5.Lcd.setRotation(3);
   M5.Lcd.setTextSize(2);
@@ -16,8 +14,6 @@ void setup() {
 
   //歩数カウントを初期化
   setupSteps();
-  //タイマーを初期化
-  setupTimer();
   //GPSを初期化
   setupGPS();
   // BLE初期化
