@@ -29,12 +29,17 @@ void startTimer(){
 	M5.update();
 	startTime = M5.Rtc.getTime();
 	startDate = rtcToString(M5.Rtc.getDate(), startTime);
+	Serial.print("Start Date:");
+	Serial.println(startDate);
 }
 
 //タイマーストップ
 void stopTimer(){
 	endTime = M5.Rtc.getTime();
 	endDate = rtcToString(M5.Rtc.getDate(), endTime);
+
+	Serial.print("End Date:");
+	Serial.println(endDate);
 	
 	//経過時間を計算
 	elapsed = (endTime.hours - startTime.hours) * 3600 +

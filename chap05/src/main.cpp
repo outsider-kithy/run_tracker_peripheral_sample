@@ -1,12 +1,13 @@
 #include <M5Unified.h>
 #include "getSteps.h"
-#include "getTime.h"
 #include "getGps.h"
+#include "getTime.h"
+#include "connectWifi.h"
 
 int pressCount = 0;
 
 void setup() {
-  //connectWifi();
+  connectWifi();
 
   M5.begin();
   M5.Lcd.setRotation(3);
@@ -15,10 +16,10 @@ void setup() {
 
   //歩数カウントを初期化
   setupSteps();
-  //タイマーを初期化
-  setupTimer();
   //GPSを初期化
   setupGPS();
+  //タイマーを初期化
+  setupTimer();
 
   M5.Lcd.println("Press A button!");
 }
@@ -37,20 +38,20 @@ void loop() {
 			M5.Lcd.println("Tracking Start!");
 			//歩数カウントスタート
 			startCountSteps();
-			//タイマースタート
-			startTimer();
 			//GPSスタート
 			startGPS();
+			//タイマースタート
+			startTimer();
 		}
 
 		// 2回目
 		else if (pressCount == 2) {
 			// 歩数カウントストップ
 			stopCountSteps();
-			// タイマーストップ
-			stopTimer();
 			// GPSストップ
 			stopGPS();
+			// タイマーストップ
+			stopTimer();
 			
 			M5.Lcd.setTextColor(RED);
 			M5.Lcd.println("Data was saved!");

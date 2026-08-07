@@ -16,10 +16,10 @@ void setup() {
 
   //歩数カウントを初期化
   setupSteps();
-  //タイマーを初期化
-  setupTimer();
   //GPSを初期化
   setupGPS();
+  //タイマーを初期化
+  setupTimer();
   // BLE初期化
   initBLE(); 
 
@@ -40,20 +40,20 @@ void loop() {
 			M5.Lcd.println("Tracking Start!");
 			//歩数カウントスタート
 			startCountSteps();
-			//タイマースタート
-			startTimer();
 			//GPSスタート
 			startGPS();
+			//タイマースタート
+			startTimer();
 		}
 
 		// 2回目
 		else if (pressCount == 2) {
 			// 歩数カウントストップ
 			stopCountSteps();
-			// タイマーストップ
-			stopTimer();
 			// GPSストップ
 			stopGPS();
+			// タイマーストップ
+			stopTimer();
 
 			// BLEでデータ送信
 			sendDataViaBLE(path, totalDistance, steps, elapsed);
