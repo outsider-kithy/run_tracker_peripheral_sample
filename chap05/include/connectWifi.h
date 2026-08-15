@@ -10,12 +10,12 @@ void connectWifi(){
 	unsigned long startAttempt = millis();
     while (WiFi.status() != WL_CONNECTED && millis() - startAttempt < 5000) {
         delay(500);
-		Serial.print("Wi-Fi is not available...");
+		Serial.println("Wi-Fi is not available...");
     }
     if (WiFi.status() != WL_CONNECTED) {
         return;
     } else {
-		Serial.print("Wi-Fi is available!");
+		Serial.println("Wi-Fi is available!");
 	}
 }
 

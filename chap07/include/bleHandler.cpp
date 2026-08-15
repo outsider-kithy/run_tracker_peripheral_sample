@@ -6,7 +6,7 @@
 #include "jsonHandler.h"
 
 #define SERVICE_UUID "12345678-1234-5678-1234-56789abcdef0" // サービスUUID
-#define TX_UUID "abcd1234-5678-90ab-cdef-1234567890ac" // 送信用キャラクタリステックのUUID
+#define TX_UUID "abcd1234-5678-90ab-cdef-1234567890ac" // 送信用キャラクタリスティックのUUID
 #define RX_UUID "98765432-1098-abcd-ef12-098765432109" // 受信用キャラクタリスティックのUUID
 
 BLECharacteristic* txCharacteristic; // 送信用キャラクタリスティック
@@ -20,16 +20,16 @@ volatile bool deleteRequested = false;
 
 // セントラルからの接続開始要求 = ACKコマンドを待ち受ける
 void waitForAck() {
-      unsigned long start = millis();
-      while (!ackReceived) {
-        if (millis() - start > 100) {  // 0.1秒タイムアウト
-          Serial.println("ACK timeout");
-          break;
-        }
-        delay(5);
-      }
-      ackReceived = false;
-    }
+	unsigned long start = millis();
+	while (!ackReceived) {
+	if (millis() - start > 100) {  // 0.1秒タイムアウト
+		Serial.println("ACK timeout");
+		break;
+	}
+	delay(5);
+	}
+	ackReceived = false;
+}
 
 // セントラルからのJSON同期要求 = SYNCコマンドに答えて、
 // 保存してあるJSONファイルを送信する

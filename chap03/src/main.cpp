@@ -43,15 +43,11 @@ void loop() {
 		else if (pressCount == 3) {
 
 			pressCount = 0;
-
-			M5.Lcd.fillScreen(BLACK);
-			M5.Lcd.setTextColor(WHITE);
-			M5.Lcd.setCursor(0,0);
-			M5.Lcd.println("Initializing...");
-
 			steps = 0;
 
-			M5.Lcd.println("Press A button!");
+			// ディープスリープして1秒後に再起動
+			esp_sleep_enable_timer_wakeup(1000000);
+			esp_deep_sleep_start();
 		}	
 	}
 }
