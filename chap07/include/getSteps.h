@@ -3,7 +3,7 @@
 #include <M5Unified.h>
 
 // 加速度のしきい値（この値を超えたら1歩とカウント）
-const float STEP_THRESHOLD = 0.9;   
+float STEP_THRESHOLD = 0.35f;
 
 // 状態変数
 extern int steps;
@@ -30,19 +30,21 @@ void startCountSteps() {
 
   // 加速度の合成値（ベクトル長）
   float magnitude = sqrt(accX * accX + accY * accY + accZ * accZ);
+  // 重力成分を除外
+  float dynamicAccel = fabs(magnitude - 1.0f);
 
   // しきい値を超えたら「1歩」
-  if (magnitude > STEP_THRESHOLD && !stepActive) {
+  if (dynamicAccel > STEP_THRESHOLD && !stepActive) {
     stepActive = true;
     steps++;
   }
 
   // 一定値を下回ったら「次のステップ検出可能状態」に戻す
-  if (magnitude < 0.5) {
+  if (dynamicAccel < STEP_THRESHOLD * 0.5f) {
     stepActive = false;
   }
   
-  delay(200);
+  delay(20);
 }
 
 //歩数カウントをストップ

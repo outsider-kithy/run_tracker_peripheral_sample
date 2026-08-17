@@ -132,5 +132,10 @@ void loop() {
 		delay(100);
 		deleteAllJsonFiles();
     }
+
+	// Bボタンが押されたら、キャリブレーションを実行
+	if (M5.BtnB.wasPressed()) {
+		calibrateStepThreshold();
+	}
 }
 
