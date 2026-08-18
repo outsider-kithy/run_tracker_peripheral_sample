@@ -33,6 +33,7 @@ void setup() {
 
 void loop() {
   	M5.update();
+	updateSteps();
 	updateGPS();
 
 	// Aボタンが押された瞬間

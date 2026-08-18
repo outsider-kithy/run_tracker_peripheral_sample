@@ -4,7 +4,8 @@
 #include "getGps.h"
 #include "jsonHandler.h"
 #include "bleHandler.h"
-#include "connectWifi.h"
+// #include "connectWifi.h"
+#include "syncRtc.h"
 #include "manageBattery.h"
 
 // Aボタンを押した回数
@@ -12,10 +13,10 @@ int pressCount = 0;
 
 // ディスプレイをオフにする時間
 unsigned long lastOperationMillis = 0;
-const unsigned long SLEEP_TIMEOUT = 30000; // 30秒
+const unsigned long SLEEP_TIMEOUT = 120000; // 120秒
 
 void setup() {
-  connectWifi();
+  //connectWifi();
   
   M5.begin();
 
@@ -33,6 +34,7 @@ void setup() {
   M5.Lcd.setRotation(3);
   M5.Lcd.setTextSize(2);
   M5.Lcd.setCursor(0,0);
+  M5.Lcd.setTextColor(WHITE);
   M5.Lcd.println("Initializing...");
 
   // バッテリー残量を表示
@@ -53,6 +55,7 @@ void setup() {
 
 void loop() {
   	M5.update();
+	updateSteps();
 	updateGPS();
 	//　バッテリー残量を更新
 	updateBatteryCharge();
@@ -77,7 +80,8 @@ void loop() {
 			M5.Lcd.setCursor(0, 40);
 			M5.Lcd.setTextColor(YELLOW);
 			M5.Lcd.println("Tracking Start!");
-			//歩数カウントスタート
+			
+			//歩数カウントリセット
 			startCountSteps();
 			//タイマースタート
 			startTimer();
@@ -99,7 +103,7 @@ void loop() {
 			M5.Lcd.setTextColor(RED);
 			M5.Lcd.println("Data was saved!");
 		}
-		// 3回目(画面とデータをリセット)
+		// 3回目(データをリセット)
 		else if (pressCount == 3) {
 
 			pressCount = 0;
@@ -112,7 +116,6 @@ void loop() {
 			// ディープスリープして1秒後に再起動
 			esp_sleep_enable_timer_wakeup(1000000);
 			esp_deep_sleep_start();
-			
 		}	
 	}
 
