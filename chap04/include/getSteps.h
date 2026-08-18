@@ -61,6 +61,6 @@ void stopCountSteps() {
     M5.Lcd.setCursor(0, 60);
 	M5.Lcd.setTextColor(WHITE);
     M5.Lcd.print(steps);
-    M5.Lcd.println(" steps, ");
+    M5.Lcd.print(" steps, ");
 }
 

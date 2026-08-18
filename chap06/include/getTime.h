@@ -160,5 +160,7 @@ void stopTimer(){
             "Elapsed: %lld millseconds\n",
             static_cast<long long>(elapsed)
         );
+		M5.Lcd.print(elapsed);
+		M5.Lcd.println("s");
 }
 
