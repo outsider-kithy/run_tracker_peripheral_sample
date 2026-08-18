@@ -1,54 +1,66 @@
 #pragma once
-#include <Arduino.h>
 #include <M5Unified.h>
 
-// 加速度のしきい値（この値を超えたら1歩とカウント）
+// 初期値
 float STEP_THRESHOLD = 0.35f;
-
-// 状態変数
-extern int steps;
-extern bool stepActive;
 
 int steps = 0;
 bool stepActive = false;
 
+// 初期化
 void setupSteps() {
 
-  if (!M5.Imu.isEnabled()) {
-    M5.Imu.begin();
-  }
-
-  delay(500);
+    if (!M5.Imu.isEnabled()) {
+        M5.Imu.begin();
+    }
+    delay(50);
 }
 
-//歩数カウントをスタート
-void startCountSteps() {
-  M5.update();
+// 歩数カウント開始
+void updateSteps() {
 
-  float accX, accY, accZ;
-  M5.Imu.getAccel(&accX, &accY, &accZ);
+    float accX, accY, accZ;
 
-  // 加速度の合成値（ベクトル長）
-  float magnitude = sqrt(accX * accX + accY * accY + accZ * accZ);
-  // 重力成分を除外
-  float dynamicAccel = fabs(magnitude - 1.0f);
+    if (!M5.Imu.getAccel(&accX, &accY, &accZ)) {
+        return;
+    }
 
-  // しきい値を超えたら「1歩」
-  if (dynamicAccel > STEP_THRESHOLD && !stepActive) {
-    stepActive = true;
-    steps++;
-  }
+    // 加速度ベクトル
+    float magnitude = sqrt(accX * accX + accY * accY + accZ * accZ);
 
-  // 一定値を下回ったら「次のステップ検出可能状態」に戻す
-  if (dynamicAccel < STEP_THRESHOLD * 0.5f) {
-    stepActive = false;
-  }
-  
-  delay(20);
+    // 重力成分を除外
+    float dynamicAccel = fabs(magnitude - 1.0f);
+
+    // 歩行ピーク検出
+    if (dynamicAccel > STEP_THRESHOLD && !stepActive) {
+        stepActive = true;
+        steps++;
+        // Serial.printf(
+        //     "STEP %d accel=%.3f\n",
+        //     steps,
+        //     dynamicAccel
+        // );
+    }
+
+    // しきい値より十分小さくなったら次の歩行を検出可能にする
+    if (dynamicAccel < STEP_THRESHOLD * 0.5f) {
+        stepActive = false;
+    }
+
+    delay(20);
 }
 
-//歩数カウントをストップ
-void stopCountSteps(){
-	M5.Lcd.print(steps);
-	M5.Lcd.println(" steps");
+// 歩数カウント開始
+void startCountSteps(){
+	steps = 0;
 }
+
+
+// 歩数カウント停止
+void stopCountSteps() {
+    M5.Lcd.setCursor(0, 60);
+	M5.Lcd.setTextColor(WHITE);
+    M5.Lcd.print(steps);
+    M5.Lcd.println(" steps, ");
+}
+

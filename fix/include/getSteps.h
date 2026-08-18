@@ -1,5 +1,4 @@
 #pragma once
-#include <Arduino.h>
 #include <M5Unified.h>
 #include <Preferences.h>
 
@@ -14,7 +13,7 @@ bool stepActive = false;
 // 歩行ピークからしきい値を決める倍率
 const float CALIBRATION_RATIO = 0.5f;
 // キャリブレーション時間
-const uint32_t CALIBRATION_TIME = 5000;
+const uint32_t CALIBRATION_TIME = 10000;
 
 // キャリブレーション
 void calibrateStepThreshold() {
@@ -23,8 +22,8 @@ void calibrateStepThreshold() {
     M5.Lcd.setCursor(0, 20);
     M5.Lcd.println("Calibration");
     M5.Lcd.println("");
-    M5.Lcd.println("Walk for 5 sec.");
-    delay(1000);
+    M5.Lcd.println("Walk for 10 sec.");
+    delay(100);
 
     uint32_t startTime = millis();
     float maxDynamicAccel = 0.0f;
@@ -49,7 +48,6 @@ void calibrateStepThreshold() {
     // 最大加速度からしきい値を計算
     STEP_THRESHOLD = maxDynamicAccel * CALIBRATION_RATIO;
 
-
     // 異常値対策
     if (STEP_THRESHOLD < 0.15f) {
         STEP_THRESHOLD = 0.15f;
@@ -63,19 +61,16 @@ void calibrateStepThreshold() {
 
     // NVSへ保存
     preferences.begin("step", false);
-
     preferences.putFloat("threshold", STEP_THRESHOLD);
-
     preferences.putBool("calibrated", true);
-
     preferences.end();
 
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setCursor(0, 20);
+	M5.Lcd.setTextColor(WHITE);
     M5.Lcd.println("Calibration OK");
-
     M5.Lcd.printf("Threshold: %.3f", STEP_THRESHOLD);
-    delay(2000);
+    delay(20);
 	M5.Lcd.fillScreen(BLACK);
 }
 
@@ -86,7 +81,7 @@ void setupSteps() {
     if (!M5.Imu.isEnabled()) {
         M5.Imu.begin();
     }
-    delay(500);
+    delay(50);
 
     // 保存済みのキャリブレーション値を確認
     preferences.begin("step", true);
@@ -98,17 +93,19 @@ void setupSteps() {
         Serial.printf("Loaded STEP_THRESHOLD: %.3f\n", STEP_THRESHOLD);
         preferences.end();
     } else {
+		STEP_THRESHOLD = 0.35f;
         preferences.end();
-        calibrateStepThreshold();
     }
 }
 
 // 歩数カウント開始
-void startCountSteps() {
-
-    M5.update();
+void updateSteps() {
 
     float accX, accY, accZ;
+
+    if (!M5.Imu.getAccel(&accX, &accY, &accZ)) {
+        return;
+    }
 
     // 加速度ベクトル
     float magnitude = sqrt(accX * accX + accY * accY + accZ * accZ);
@@ -120,6 +117,11 @@ void startCountSteps() {
     if (dynamicAccel > STEP_THRESHOLD && !stepActive) {
         stepActive = true;
         steps++;
+        // Serial.printf(
+        //     "STEP %d accel=%.3f\n",
+        //     steps,
+        //     dynamicAccel
+        // );
     }
 
     // しきい値より十分小さくなったら次の歩行を検出可能にする
@@ -130,12 +132,17 @@ void startCountSteps() {
     delay(20);
 }
 
+// 歩数カウント開始
+void startCountSteps(){
+	steps = 0;
+}
+
 
 // 歩数カウント停止
 void stopCountSteps() {
     M5.Lcd.setCursor(0, 60);
+	M5.Lcd.setTextColor(WHITE);
     M5.Lcd.print(steps);
-    M5.Lcd.println(" steps");
+    M5.Lcd.println(" steps, ");
 }
-
 

@@ -52,6 +52,7 @@ void setup() {
 
 void loop() {
   	M5.update();
+	updateSteps();
 	updateGPS();
 	//電池残量を更新
 	updateBatteryCharge();

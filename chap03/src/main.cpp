@@ -18,6 +18,7 @@ void setup() {
 
 void loop() {
   	M5.update();
+	updateSteps();
 
 	// Aボタンが押された瞬間
 	if (M5.BtnA.wasPressed()) {
